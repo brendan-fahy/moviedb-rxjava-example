@@ -1,7 +1,7 @@
 package com.breadbin.moviedb_rxjava_example;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +16,7 @@ import com.breadbin.moviedb_rxjava_example.movielist.MovieViewModelConverter;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
@@ -40,7 +40,8 @@ public class MovieListActivity extends AppCompatActivity {
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    private ProgressDialog progressDialog;
+    @Bind(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private DataSource dataSource;
 
@@ -54,12 +55,20 @@ public class MovieListActivity extends AppCompatActivity {
         setTitle(getString(R.string.list_page_title));
 
         dataSource = DataSource.getInstance();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestMovies();
+            }
+        });
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        showMovies(new ArrayList<MovieCardViewModel>(0));
 
         requestMovies();
     }
@@ -71,23 +80,6 @@ public class MovieListActivity extends AppCompatActivity {
 
     public void showMovies(List<MovieCardViewModel> movies) {
         initRecyclerView(new MovieAdapter(movies));
-    }
-
-    public void showLoadingDialog() {
-        if (progressDialog == null) {
-            initialiseProgressDialog();
-        }
-        progressDialog.show();
-    }
-
-    private void initialiseProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.common_loading));
-    }
-
-
-    public void dismissLoadingDialog() {
-        progressDialog.dismiss();
     }
 
     private void initRecyclerView(RecyclerView.Adapter adapter) {
@@ -117,17 +109,11 @@ public class MovieListActivity extends AppCompatActivity {
                         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        showLoadingDialog();
-                    }
-                })
                 .subscribe(new Action1<List<MovieCardViewModel>>() {
                     @Override
                     public void call(List<MovieCardViewModel> movieCardViewModels) {
-                        dismissLoadingDialog();
                         showMovies(movieCardViewModels);
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
     }
