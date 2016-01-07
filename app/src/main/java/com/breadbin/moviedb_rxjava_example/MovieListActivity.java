@@ -91,6 +91,16 @@ public class MovieListActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(false);
     }
 
+    /**
+     * Requests a list of movies from the API, for display on screen.
+     * In order to resolve the movie genre IDs (integers in the API response) into human-readable
+     * text, a call to the Genres API is needed. Similarly, in order to compose the full image URL
+     * for each movie's image, the Configuration API is needed for the base URL.
+     *
+     * By using the "zip" operator, we can combine these three Observables, and execute our code
+     * only when all three have emitted an event (ie, when we have Configuration, Genres, and a list
+     * of movies).
+     */
     private void requestMovies() {
         Observable<Configuration> configuration = dataSource.getConfiguration();
         Observable<Map<Integer, String>> genres = dataSource.getGenres();
