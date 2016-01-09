@@ -1,4 +1,4 @@
-package com.breadbin.moviedb_rxjava_example;
+package com.breadbin.moviedb_rxjava_example.movielist;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -7,12 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import com.breadbin.moviedb_rxjava_example.model.DataSource;
+import com.breadbin.moviedb_rxjava_example.R;
 import com.breadbin.moviedb_rxjava_example.model.MovieResults;
+import com.breadbin.moviedb_rxjava_example.model.RxJavaDataSource;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
-import com.breadbin.moviedb_rxjava_example.movielist.MovieAdapter;
-import com.breadbin.moviedb_rxjava_example.movielist.MovieCardViewModel;
-import com.breadbin.moviedb_rxjava_example.movielist.MovieViewModelConverter;
 
 import org.joda.time.DateTime;
 
@@ -43,7 +41,7 @@ public class MovieListActivity extends AppCompatActivity {
     @Bind(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private DataSource dataSource;
+    private RxJavaDataSource rxJavaDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +52,7 @@ public class MovieListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle(getString(R.string.list_page_title));
 
-        dataSource = DataSource.getInstance();
+        rxJavaDataSource = RxJavaDataSource.getInstance();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -102,9 +100,9 @@ public class MovieListActivity extends AppCompatActivity {
      * of movies).
      */
     private void requestMovies() {
-        Observable<Configuration> configuration = dataSource.getConfiguration();
-        Observable<Map<Integer, String>> genres = dataSource.getGenres();
-        Observable<MovieResults> movieResults = dataSource.getMovieList(getQueryStartDate(),
+        Observable<Configuration> configuration = rxJavaDataSource.getConfiguration();
+        Observable<Map<Integer, String>> genres = rxJavaDataSource.getGenres();
+        Observable<MovieResults> movieResults = rxJavaDataSource.getMovieList(getQueryStartDate(),
                 getQueryEndDate());
 
         Observable

@@ -16,7 +16,7 @@ import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class RestClient {
+public class RxJavaRestClient {
 
   public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
 
@@ -24,20 +24,20 @@ public class RestClient {
   public static final String MOVIEDB_API_KEY = "7a2fdb0a7c4e001a1941d1dde66e1f87";
   public static final String API_KEY_PARAM_NAME = "api_key";
 
-  private static RestClient instance;
+  private static RxJavaRestClient instance;
 
   private ConfigurationService configService;
   private GenreService genreService;
   private MovieListService movieListService;
 
-  public static RestClient getInstance() {
+  public static RxJavaRestClient getInstance() {
     if (instance == null) {
-      instance = new RestClient();
+      instance = new RxJavaRestClient();
     }
     return instance;
   }
 
-  private RestClient() {
+  private RxJavaRestClient() {
     Retrofit retrofit = new Retrofit.Builder()
         .baseUrl(MOVIEDB_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -50,11 +50,11 @@ public class RestClient {
   }
 
   public Observable<Configuration> requestConfig() {
-    return configService.getConfiguration(MOVIEDB_API_KEY);
+    return configService.getConfigurationRx(MOVIEDB_API_KEY);
   }
 
   public Observable<Map<Integer, String>> requestGenres() {
-    return genreService.getGenres(MOVIEDB_API_KEY)
+    return genreService.getGenresRx(MOVIEDB_API_KEY)
         .map(new Func1<Genres, Map<Integer, String>>() {
           @Override
           public Map<Integer, String> call(Genres genres) {

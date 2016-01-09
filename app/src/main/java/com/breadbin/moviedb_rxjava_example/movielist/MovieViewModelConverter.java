@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.breadbin.moviedb_rxjava_example.model.Movie;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
-import com.breadbin.moviedb_rxjava_example.model.api.RestClient;
+import com.breadbin.moviedb_rxjava_example.model.api.RxJavaRestClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +62,12 @@ public class MovieViewModelConverter {
         .buildUpon()
         .appendPath(config.getImages().getPosterSizes().get(0))
         .appendPath(posterPath.replaceFirst("/", ""))
-        .appendQueryParameter(RestClient.API_KEY_PARAM_NAME, RestClient.MOVIEDB_API_KEY)
+        .appendQueryParameter(RxJavaRestClient.API_KEY_PARAM_NAME, RxJavaRestClient.MOVIEDB_API_KEY)
         .build();
   }
 
   private String getFormattedReleaseDate(String releaseDate) {
-    return RestClient.DATE_TIME_FORMATTER.parseDateTime(releaseDate).year().getAsString();
+    return RxJavaRestClient.DATE_TIME_FORMATTER.parseDateTime(releaseDate).year().getAsString();
   }
 
   private String getFormattedRating(float voteAverage) {

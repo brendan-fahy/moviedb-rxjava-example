@@ -3,7 +3,7 @@ package com.breadbin.moviedb_rxjava_example.model;
 import android.support.annotation.VisibleForTesting;
 
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
-import com.breadbin.moviedb_rxjava_example.model.api.RestClient;
+import com.breadbin.moviedb_rxjava_example.model.api.RxJavaRestClient;
 
 import org.joda.time.DateTime;
 
@@ -14,26 +14,26 @@ import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class DataSource {
+public class RxJavaDataSource {
 
-    private RestClient restClient;
+    private RxJavaRestClient restClient;
     private Configuration config;
     private Map<Integer, String> genres;
 
-    private static DataSource instance;
+    private static RxJavaDataSource instance;
 
-    private DataSource() {
-        this.restClient = RestClient.getInstance();
+    private RxJavaDataSource() {
+        this.restClient = RxJavaRestClient.getInstance();
     }
 
     @VisibleForTesting
-    DataSource(RestClient restClient) {
+    RxJavaDataSource(RxJavaRestClient restClient) {
         this.restClient = restClient;
     }
 
-    public static DataSource getInstance() {
+    public static RxJavaDataSource getInstance() {
         if (instance == null) {
-            instance = new DataSource();
+            instance = new RxJavaDataSource();
         }
         return instance;
     }
@@ -57,7 +57,7 @@ public class DataSource {
      * the event is not valid, and is ignored.
      * Therefore, the first time this method is called, the instance variable will be null, and the
      * Observable will wait for the network response to return, and emit that.
-     * On all subsequent calls (in the lifetime of the DataSource object), the instance variable will
+     * On all subsequent calls (in the lifetime of the RxJavaDataSource object), the instance variable will
      * not be null, and so this will be emitted.
      *
      * There is no reason the predicate has to be a null check. Checking something within the object,
