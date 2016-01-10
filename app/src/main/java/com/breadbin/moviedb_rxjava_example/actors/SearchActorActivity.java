@@ -1,28 +1,43 @@
-package com.breadbin.moviedb_rxjava_example.movielist;
+package com.breadbin.moviedb_rxjava_example.actors;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Toast;
 
 import com.breadbin.moviedb_rxjava_example.R;
 import com.breadbin.moviedb_rxjava_example.model.ActorResults;
-import com.breadbin.moviedb_rxjava_example.model.VanillaDataSource;
 
+import java.util.ArrayList;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
 public class SearchActorActivity extends AppCompatActivity {
 
+    @Bind(R.id.recyclerView)
+    RecyclerView recyclerView;
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     private SearchView searchView;
+
+    private ActorAdapter adapter;
+
+    private ActorViewModelConverter converter;
+
+    private ProgressDialog progressDialog;
 
     private VanillaDataSource dataSource = VanillaDataSource.getInstance();
 
@@ -30,8 +45,10 @@ public class SearchActorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_actor);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        setupRecyclerView();
     }
 
     @Override
@@ -52,8 +69,7 @@ public class SearchActorActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Snackbar.make(searchView, "Search text change!", Snackbar.LENGTH_SHORT).show();
-                return false;
+                return true;
             }
         });
 
@@ -68,11 +84,19 @@ public class SearchActorActivity extends AppCompatActivity {
                     .show();
         }
 
+        showProgressDialog(query);
+
+        if (converter == null) {
+            converter = new ActorViewModelConverter(dataSource.getConfiguration());
+        }
+
         dataSource.searchActors(query, new Callback<ActorResults>() {
             @Override
             public void onResponse(Response<ActorResults> response, Retrofit retrofit) {
-                Log.d("SearchActorActivity", response.body().getActors().size() + " actors found.");
-                Toast.makeText(getApplicationContext(), response.body().getTotalActors() + " actors found.", Toast.LENGTH_SHORT).show();
+                adapter.setActors(converter.convertToViewModels(response.body().getActors()));
+                adapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(0);
+                hideProgressDialog();
             }
 
             @Override
@@ -80,5 +104,22 @@ public class SearchActorActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setupRecyclerView() {
+        adapter = new ActorAdapter(new ArrayList<ActorViewModel>(0));
+        recyclerView.setAdapter(adapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void showProgressDialog(String query) {
+        progressDialog = ProgressDialog.show(this, "Searching", "Searching for actors named " + query);
+    }
+
+    private void hideProgressDialog() {
+        progressDialog.dismiss();
     }
 }

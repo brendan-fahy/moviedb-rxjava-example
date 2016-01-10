@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.breadbin.moviedb_rxjava_example.actors.ActorCard
+	android:id="@+id/movieCard"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:layout_margin="@dimen/spacing_normal"
+	android:padding="@dimen/spacing_normal"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="@dimen/spacing_normal"
+		>
+
+	<ImageView
+		android:id="@+id/ivThumbnail"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:scaleType="centerCrop"
+		android:layout_margin="@dimen/spacing_normal"
+		/>
+
+	<TextView
+		android:id="@+id/tvName"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/ivThumbnail"
+		android:layout_toEndOf="@+id/ivThumbnail"
+		android:padding="@dimen/spacing_normal"
+
+		android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+		tools:text="Mad Max: Fury Road"
+		/>
+
+		<TextView
+			android:id="@+id/tvKnownFor"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/tvName"
+			android:layout_alignLeft="@+id/tvName"
+			android:layout_alignStart="@id/tvName"
+			android:padding="@dimen/spacing_normal"
+
+			android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+			tools:text="Action/Comedy"
+			/>
+
+		<TextView
+			android:id="@+id/tvPopularity"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/tvKnownFor"
+			android:padding="@dimen/spacing_normal"
+			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+			tools:text="9.5/10"
+			/>
+
+		<TextView
+			android:id="@+id/tvYear"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignBottom="@id/tvPopularity"
+			android:layout_toRightOf="@id/tvPopularity"
+			android:layout_toEndOf="@id/tvPopularity"
+			android:padding="@dimen/spacing_normal"
+			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+			tools:text="2015"
+			/>
+
+	</RelativeLayout>
+
+</com.breadbin.moviedb_rxjava_example.actors.ActorCard>

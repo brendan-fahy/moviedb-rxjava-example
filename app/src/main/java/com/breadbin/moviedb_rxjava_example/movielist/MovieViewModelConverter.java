@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.breadbin.moviedb_rxjava_example.model.Movie;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
-import com.breadbin.moviedb_rxjava_example.model.api.RxJavaRestClient;
 
 import java.util.ArrayList;
 import java.util.List;

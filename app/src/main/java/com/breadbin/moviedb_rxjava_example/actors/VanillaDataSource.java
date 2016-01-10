@@ -1,11 +1,7 @@
-package com.breadbin.moviedb_rxjava_example.model;
+package com.breadbin.moviedb_rxjava_example.actors;
 
+import com.breadbin.moviedb_rxjava_example.model.ActorResults;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
-import com.breadbin.moviedb_rxjava_example.model.api.Genres;
-import com.breadbin.moviedb_rxjava_example.model.api.VanillaRestClient;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.Response;
@@ -18,7 +14,6 @@ public class VanillaDataSource {
 
     private VanillaRestClient restClient;
     private Configuration config;
-    private Map<Integer, String> genres;
 
     private boolean initialised = false;
 
@@ -35,30 +30,6 @@ public class VanillaDataSource {
         restClient = VanillaRestClient.getInstance();
 
         getConfigFromNetwork();
-        getGenresFromNetwork();
-    }
-
-    private void getGenresFromNetwork() {
-        restClient.getGenres(new Callback<Genres>() {
-            @Override
-            public void onResponse(Response<Genres> response, Retrofit retrofit) {
-                Genres responseGenres = response.body();
-                genres = new HashMap<>(responseGenres.getGenres().size());
-
-                for (Genre genre: responseGenres.getGenres()) {
-                    genres.put(genre.getId(), genre.getName());
-                }
-
-                if (config != null) {
-                    initialised = true;
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
-            }
-        });
     }
 
     private void getConfigFromNetwork() {
@@ -66,10 +37,7 @@ public class VanillaDataSource {
             @Override
             public void onResponse(Response<Configuration> response, Retrofit retrofit) {
                 config = response.body();
-
-                if (genres != null) {
-                    initialised = true;
-                }
+                initialised = true;
             }
 
             @Override
@@ -77,10 +45,6 @@ public class VanillaDataSource {
 
             }
         });
-    }
-
-    public Map<Integer, String> getGenres() {
-        return genres;
     }
 
     public Configuration getConfiguration() {

@@ -19,7 +19,7 @@
         </activity>
 
         <activity
-            android:name=".movielist.SearchActorActivity"
+            android:name=".actors.SearchActorActivity"
             android:label="@string/title_activity_search_actor"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

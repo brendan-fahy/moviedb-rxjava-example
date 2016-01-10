@@ -1,7 +1,12 @@
-package com.breadbin.moviedb_rxjava_example.model.api;
+package com.breadbin.moviedb_rxjava_example.movielist;
 
 import com.breadbin.moviedb_rxjava_example.model.Genre;
 import com.breadbin.moviedb_rxjava_example.model.MovieResults;
+import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
+import com.breadbin.moviedb_rxjava_example.model.api.ConfigurationService;
+import com.breadbin.moviedb_rxjava_example.model.api.GenreService;
+import com.breadbin.moviedb_rxjava_example.model.api.Genres;
+import com.breadbin.moviedb_rxjava_example.model.api.MovieListService;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

@@ -1,6 +1,9 @@
-package com.breadbin.moviedb_rxjava_example.model.api;
+package com.breadbin.moviedb_rxjava_example.actors;
 
 import com.breadbin.moviedb_rxjava_example.model.ActorResults;
+import com.breadbin.moviedb_rxjava_example.model.api.ActorsService;
+import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
+import com.breadbin.moviedb_rxjava_example.model.api.ConfigurationService;
 
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -18,7 +21,6 @@ public class VanillaRestClient {
     public static VanillaRestClient instance;
 
     private ConfigurationService configService;
-    private GenreService genreService;
     private ActorsService actorsService;
 
     public static VanillaRestClient getInstance() {
@@ -36,16 +38,11 @@ public class VanillaRestClient {
                 .build();
 
         configService = retrofit.create(ConfigurationService.class);
-        genreService = retrofit.create(GenreService.class);
         actorsService = retrofit.create(ActorsService.class);
     }
 
     public void getConfig(Callback<Configuration> callback) {
         configService.getConfiguration(MOVIEDB_API_KEY).enqueue(callback);
-    }
-
-    public void getGenres(Callback<Genres> callback) {
-        genreService.getGenres(MOVIEDB_API_KEY).enqueue(callback);
     }
 
     public void getActors(String query, Callback<ActorResults> callback) {

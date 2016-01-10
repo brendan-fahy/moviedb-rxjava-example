@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.breadbin.moviedb_rxjava_example.R;
 import com.breadbin.moviedb_rxjava_example.model.MovieResults;
-import com.breadbin.moviedb_rxjava_example.model.RxJavaDataSource;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
 
 import org.joda.time.DateTime;

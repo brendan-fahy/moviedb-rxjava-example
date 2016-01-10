@@ -1,9 +1,9 @@
-package com.breadbin.moviedb_rxjava_example.model;
+package com.breadbin.moviedb_rxjava_example.movielist;
 
 import android.support.annotation.VisibleForTesting;
 
+import com.breadbin.moviedb_rxjava_example.model.MovieResults;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
-import com.breadbin.moviedb_rxjava_example.model.api.RxJavaRestClient;
 
 import org.joda.time.DateTime;
 
