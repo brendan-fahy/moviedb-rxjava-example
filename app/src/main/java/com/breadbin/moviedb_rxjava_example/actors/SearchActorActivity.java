@@ -64,12 +64,13 @@ public class SearchActorActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search(query);
+                searchView.clearFocus();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return true;
+                return false;
             }
         });
 
@@ -82,6 +83,7 @@ public class SearchActorActivity extends AppCompatActivity {
                     .setMessage("DataSource not yet initialised! Please try again in a moment.")
                     .setPositiveButton(android.R.string.ok, null)
                     .show();
+            return;
         }
 
         showProgressDialog(query);
