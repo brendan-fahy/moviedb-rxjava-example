@@ -2,7 +2,6 @@ package com.breadbin.moviedb_rxjava_example.actors;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +48,8 @@ public class SearchActorActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         setupRecyclerView();
+
+        converter = new ActorViewModelConverter(dataSource.getConfiguration());
     }
 
     @Override
@@ -78,19 +79,7 @@ public class SearchActorActivity extends AppCompatActivity {
     }
 
     private void search(String query) {
-        if (!dataSource.isInitialised()) {
-            new AlertDialog.Builder(this)
-                    .setMessage("DataSource not yet initialised! Please try again in a moment.")
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-            return;
-        }
-
         showProgressDialog(query);
-
-        if (converter == null) {
-            converter = new ActorViewModelConverter(dataSource.getConfiguration());
-        }
 
         dataSource.searchActors(query, new Callback<ActorResults>() {
             @Override

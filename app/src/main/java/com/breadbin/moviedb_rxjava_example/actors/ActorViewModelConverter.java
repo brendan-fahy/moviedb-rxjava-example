@@ -9,6 +9,10 @@ import com.breadbin.moviedb_rxjava_example.movielist.RxJavaRestClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 public class ActorViewModelConverter {
 
     private static final String TITLE_SEPARATOR = ", ";
@@ -17,8 +21,15 @@ public class ActorViewModelConverter {
 
     private static final int MAX_KNOWN_FORS = 3;
 
-    public ActorViewModelConverter(Configuration config) {
-        this.config = config;
+    public ActorViewModelConverter(Observable<Configuration> configurationObservable) {
+        configurationObservable
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Configuration>() {
+                    @Override
+                    public void call(Configuration configuration) {
+                        config = configuration;
+                    }
+                });
     }
 
     public List<ActorViewModel> convertToViewModels(List<Actor> actors) {
@@ -32,7 +43,7 @@ public class ActorViewModelConverter {
     public ActorViewModel convertToViewModel(Actor actor) {
         ActorViewModel viewModel = new ActorViewModel();
         viewModel.setName(actor.getName());
-        if (actor.getProfilePath() != null) {
+        if (actor.getProfilePath() != null && config != null) {
             viewModel.setImageUri(getImagePath(actor.getProfilePath()));
         }
         viewModel.setRating(String.valueOf(actor.getPopularity()));
