@@ -5,7 +5,6 @@ import com.breadbin.moviedb_rxjava_example.model.api.ActorsService;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
 import com.breadbin.moviedb_rxjava_example.model.api.ConfigurationService;
 
-import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
@@ -46,7 +45,7 @@ public class VanillaRestClient {
         return configService.getConfigurationRx(MOVIEDB_API_KEY);
     }
 
-    public void getActors(String query, Callback<ActorResults> callback) {
-        actorsService.getActorResults(MOVIEDB_API_KEY, query).enqueue(callback);
+    public Observable<ActorResults> getActors(String query) {
+        return actorsService.getActorResults(MOVIEDB_API_KEY, query);
     }
 }

@@ -3,7 +3,6 @@ package com.breadbin.moviedb_rxjava_example.actors;
 import com.breadbin.moviedb_rxjava_example.model.ActorResults;
 import com.breadbin.moviedb_rxjava_example.model.api.Configuration;
 
-import retrofit.Callback;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
@@ -58,7 +57,7 @@ public class VanillaDataSource {
                 });
     }
 
-    public void searchActors(String query, Callback<ActorResults> callback) {
-        restClient.getActors(query, callback);
+    public Observable<ActorResults> searchActors(String query) {
+        return restClient.getActors(query);
     }
 }

@@ -18,9 +18,9 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class SearchActorActivity extends AppCompatActivity {
 
@@ -81,20 +81,18 @@ public class SearchActorActivity extends AppCompatActivity {
     private void search(String query) {
         showProgressDialog(query);
 
-        dataSource.searchActors(query, new Callback<ActorResults>() {
-            @Override
-            public void onResponse(Response<ActorResults> response, Retrofit retrofit) {
-                adapter.setActors(converter.convertToViewModels(response.body().getActors()));
-                adapter.notifyDataSetChanged();
-                recyclerView.scrollToPosition(0);
-                hideProgressDialog();
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
-            }
-        });
+        dataSource.searchActors(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ActorResults>() {
+                    @Override
+                    public void call(ActorResults actorResults) {
+                        adapter.setActors(converter.convertToViewModels(actorResults.getActors()));
+                        adapter.notifyDataSetChanged();
+                        recyclerView.scrollToPosition(0);
+                        hideProgressDialog();
+                    }
+                });
     }
 
     private void setupRecyclerView() {
