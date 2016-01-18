@@ -9,6 +9,7 @@ import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
+import rx.Observable;
 
 /**
  * Created by bfahy on 09/01/16.
@@ -41,8 +42,8 @@ public class VanillaRestClient {
         actorsService = retrofit.create(ActorsService.class);
     }
 
-    public void getConfig(Callback<Configuration> callback) {
-        configService.getConfiguration(MOVIEDB_API_KEY).enqueue(callback);
+    public Observable<Configuration> getConfig() {
+        return configService.getConfigurationRx(MOVIEDB_API_KEY);
     }
 
     public void getActors(String query, Callback<ActorResults> callback) {
