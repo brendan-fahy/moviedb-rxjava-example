@@ -14,6 +14,10 @@
   
 ## So what should I do?
  Start from `start_point`, and refactor the actors search feature to use RxJava! 
+ 
+### 0. Get an API key for themoviedb.org
+First off, you need to get an API key for [themoviedb.org](https://themoviedb.org) API. Create an account and request a free developer API key, and use this for the `MOVIEDB_API_KEY` constant (which currently exists in both `VanillaRestClient` and `RxJavaRestClient`, but obviously shouldn't).
+  Developer API tokens are limited to 30 requests every 10 seconds. 
    
 ### 1. Retrieving the Configuration object
 themoviedb.org API has a `Configuration` object which is required if you want to retrieve any images from the server. Our `ActorCard` has an `ImageView` into which we load a picture of that actor, using `Picasso`, so we need that `Configuration` object. But the config isn't going to change very often, so we probably only need to request it once. At this point, we're not handling that very well. In the `VanillaDataSource`, we request the `Configuration` in the constructor, and store the value in the `config` member variable.
@@ -53,8 +57,41 @@ We expose a getter for `config`, and an `isInitialised` method (which is a bit s
                  
  ... but that still wouldn't be making any use of the member variable, so let's take it up a notch.
  
- We can use `Observable.create` to create an `Observable` which returns the value of `config`. We can also use the `restClient` to get an `Observable` which populates our `config` (as above).
- Now here's where it gets fun: we can use `Observable.concat` to combine these two streams into one, and we can use the `first` operator to only return the first value which is emitted. But that will be `null`, since `config` hasn't been set yet. So we can use a predicate in the `first` operator, and make sure the `Configuration` object is valid!
+ We can use the `Observable.create` static factory method to create an `Observable` which returns the value of `config`, and then completes:
+  
+    Observable<Configuration> memoryObs = Observable
+        .create(new Observable.OnSubscribe<Configuration>() {
+            @Override
+            public void call(Subscriber<? super Configuration> subscriber) {
+                subscriber.onNext(config);
+                subscriber.onCompleted();
+            }
+        });
+  
+  We can also use the `restClient` to get an `Observable` which populates our `config` (as above):
+  
+    Observable<Configuration> networkObs = restClient.getConfig()
+        .doOnNext(new Action1<Configuration>() {
+            @Override
+            public void call(Configuration configuration) {
+                config = configuration;
+                }
+            });
+            
+ Now here's where it gets fun: we can use `Observable.concat` to combine these two streams into one, and we can use the `first` operator to return an `Observable` which emits only the first value to be emitted by either of the two concatenated `Observable`s:
+ 
+    return Observable.concat(memoryObs, networkObs)
+        .first();
+ 
+ But that first value will be `null`, since `config` hasn't been set yet. So we can use a predicate in the `first` operator, and make sure the `Configuration` object is valid:
+ 
+    .first(new Func1<Configuration, Boolean>() {
+        @Override
+        public Boolean call(Configuration configuration) {
+            return configuration != null;
+        }
+    });
+ 
  
  Now the `SearchActorActivity` doesn't have to check whether the data source is initialised, it just gets an `Observable<Configuration>`, which emits from memory or from the network, and `SearchActorActivity` doesn't have to know or care. 
 
